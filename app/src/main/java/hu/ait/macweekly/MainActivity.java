@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.about_page) {
             goToAboutPage();
             resetArticles();
+            setTitle(R.string.app_name);
             return true;
         }
 

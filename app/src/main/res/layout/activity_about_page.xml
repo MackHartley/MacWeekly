@@ -7,23 +7,70 @@
     android:label="About Page"
     tools:context="hu.ait.macweekly.AboutPage">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="238dp"
-        android:layout_height="301dp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/home_icon"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="73dp"
-        tools:layout_editor_absoluteY="69dp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="352dp"
-        android:layout_height="52dp"
-        android:text="Developed by Mack Hartly, Amanda Doan, and Hunter Herman."
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="443dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="0dp">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="250dp"
+            android:layout_height="52dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="60dp"
+            android:text="@string/app_name"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+            tools:ignore="MissingConstraints,NewApi"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="443dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="203dp"
+                android:layout_height="263dp"
+                android:cropToPadding="true"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/home_icon"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="69dp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="238dp"
+                android:layout_height="21dp"
+                android:text=""
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="368dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="358dp"
+            android:layout_height="52dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:text="Developed by Mack Hartly, Amanda Doan, and Hunter Herman."
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="443dp" />
+
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
