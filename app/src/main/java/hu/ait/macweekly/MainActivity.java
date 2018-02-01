@@ -170,6 +170,11 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        if (id == R.id.about_page) {
+            goToAboutPage();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -242,6 +247,10 @@ public class MainActivity extends AppCompatActivity
                 showErrorScreen();
             }
         });
+    }
+
+    private void goToAboutPage() {
+        hideNewsFeed();
     }
 
     private void resetArticles() {
