@@ -13,7 +13,7 @@ add_action( 'rest_api_init', function() {
     register_rest_field('post', 'guest_author', array(
         'get_callback' => function( $post_arr ) {
             $guest_author_id = get_post_meta( $post_arr['id'], '_molongui_guest_author_id', true );
-            if (is_null($guest_author_id)) {
+            if ($guest_author_id == "") {
                 return null;
             } else {
                 $author = new Guest_Author();
