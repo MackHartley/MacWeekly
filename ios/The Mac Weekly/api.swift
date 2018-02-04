@@ -33,6 +33,7 @@ public struct Post {
     var title: String
     var body: String
     var time: Date
+    var thumbnailURL: URL?
     
     init?(json:JSON) {
         if let title = json["title"]["rendered"].string, let body = json["content"]["rendered"].string, let timeString = json["date"].string {
@@ -48,6 +49,13 @@ public struct Post {
             self.time = time
             self.author = Author(json: json["guest_author"])
             
+            if let thumbnailURL = json["normal_thumbnail_url"].string {
+                self.thumbnailURL = URL(string: thumbnailURL)
+            } else {
+                self.thumbnailURL = nil
+            }
+            
+            
         } else {
             return nil
         }
@@ -55,8 +63,10 @@ public struct Post {
 }
 let API_ROOT = URL(string: "http://themacweekly.com/wp-json/wp/v2/")!
 
-public func getPosts(completion: @escaping ([Post?]) -> Void) -> DataRequest {
-    return Alamofire.request(API_ROOT.appendingPathComponent("posts")).responseJSON { response in
+public func getPosts(_ page: Int = 1, completion: @escaping ([Post?]) -> Void) -> DataRequest {
+    var url = URLComponents(string: "posts")
+    url?.queryItems = [URLQueryItem(name: "page", value: String(page))]
+    return Alamofire.request(url!.url(relativeTo: API_ROOT)!).responseJSON { response in
         if let json = response.result.value {
             completion(JSON(json).array?.map { postJSON in
                 return Post(json: postJSON)
