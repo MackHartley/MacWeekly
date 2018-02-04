@@ -11,19 +11,42 @@ import UIKit
 class PostTableViewController: UITableViewController {
     
     var posts: [Post?] = []
+    var loading = false
+    var page = 0
+    
+    let infinitescroll_margin = 20
+    
+    func nextPage() {
+        if !loading {
+            let nextPage = page + 1
+            loading = true
+            
+            getPosts(nextPage) { posts in
+                self.posts += posts
+                self.page = nextPage
+                self.tableView.reloadData()
+            }.response { _ in
+                self.loading = false
+            }
+            
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        nextPage()
         
-        getPosts { posts in
-            self.posts = posts
-            self.tableView.reloadData()
-        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row > self.posts.count - self.infinitescroll_margin {
+            self.nextPage()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -62,9 +85,6 @@ class PostTableViewController: UITableViewController {
             cell.authorNameLabel.text = nil
         }
         
-        
-//         Configure the cell...
-
         return cell
     }
  

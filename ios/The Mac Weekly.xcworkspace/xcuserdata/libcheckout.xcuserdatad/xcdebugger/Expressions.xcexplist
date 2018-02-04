@@ -3,6 +3,17 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "getPosts(_:completion:):api.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "url!.url(relativeTo: API_ROOT)!.absoluteString">
+            </PersistentString>
+            <PersistentString
+               value = "API_ROOT.path">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in getPost(postID:completion:):api.swift">
       </ContextState>
       <ContextState
@@ -10,6 +21,14 @@
          <PersistentStrings>
             <PersistentString
                value = "test.progress.fractionComplete">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PostTableViewController.tableView(_:cellForRowAt:):PostTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "formatter.string(from: post.time)">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

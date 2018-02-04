@@ -55,8 +55,10 @@ public struct Post {
 }
 let API_ROOT = URL(string: "http://themacweekly.com/wp-json/wp/v2/")!
 
-public func getPosts(completion: @escaping ([Post?]) -> Void) -> DataRequest {
-    return Alamofire.request(API_ROOT.appendingPathComponent("posts")).responseJSON { response in
+public func getPosts(_ page: Int = 1, completion: @escaping ([Post?]) -> Void) -> DataRequest {
+    var url = URLComponents(string: "posts")
+    url?.queryItems = [URLQueryItem(name: "page", value: String(page))]
+    return Alamofire.request(url!.url(relativeTo: API_ROOT)!).responseJSON { response in
         if let json = response.result.value {
             completion(JSON(json).array?.map { postJSON in
                 return Post(json: postJSON)
