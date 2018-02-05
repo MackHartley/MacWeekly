@@ -31,6 +31,16 @@ add_action( 'rest_api_init', function() {
               }
          },
     ));
+    register_rest_field('post', 'full_thumbnail_url', array(
+         'get_callback' => function( $post_arr ) {
+            $url = get_the_post_thumbnail_url($post_arr['id'], 'large');
+            if ($url == false) {
+               return null;
+            } else {
+               return $url;
+            }
+         },
+    ));
     register_rest_field('post', 'post_meta', array(
         'get_callback' => function( $post_arr ) {
             return get_post_meta( $post_arr['id']);

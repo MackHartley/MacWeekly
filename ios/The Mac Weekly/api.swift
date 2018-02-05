@@ -9,6 +9,8 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Kingfisher
+
 
 
 public struct Author {
@@ -25,10 +27,12 @@ public struct Author {
         } else {
             return nil
         }
+        
     }
 }
 
 public struct Post {
+    var id: Int
     var author: Author?
     var title: String
     var body: String
@@ -36,7 +40,8 @@ public struct Post {
     var thumbnailURL: URL?
     
     init?(json:JSON) {
-        if let title = json["title"]["rendered"].string, let body = json["content"]["rendered"].string, let timeString = json["date"].string {
+        if let id=json["id"].number, let title = json["title"]["rendered"].string, let body = json["content"]["rendered"].string, let timeString = json["date"].string {
+            self.id = Int(truncating: id)
             self.title = title
             self.body = body
             let formatter = DateFormatter()
@@ -60,6 +65,24 @@ public struct Post {
             return nil
         }
     }
+    func thumbnail(completion: @escaping  (Image?) -> Void) {
+        let key = "thumbnail:post-\(self.id)"
+        ImageCache.default.retrieveImage(forKey: key, options: nil) { (thumbnail, cacheType) in
+            if let thumbnail = thumbnail {
+                completion(thumbnail)
+                return
+            } else if let thumbnailURL = self.thumbnailURL {
+                ImageDownloader.default.downloadImage(with: thumbnailURL) { (thumbnail, error, url, data) in
+                    if let thumbnail = thumbnail {
+                        ImageCache.default.store(thumbnail, forKey: key)
+                        completion(thumbnail)
+                        return
+                    }
+                }
+            }
+            completion(nil)
+        }
+    }
 }
 let API_ROOT = URL(string: "http://themacweekly.com/wp-json/wp/v2/")!
 
@@ -69,6 +92,9 @@ public func getPosts(_ page: Int = 1, completion: @escaping ([Post?]) -> Void) -
     return Alamofire.request(url!.url(relativeTo: API_ROOT)!).responseJSON { response in
         if let json = response.result.value {
             completion(JSON(json).array?.map { postJSON in
+                if Double(arc4random())/Double(Int32.max) < 0.25 {
+                    return nil
+                }
                 return Post(json: postJSON)
             } ?? [])
             

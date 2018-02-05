@@ -14,7 +14,8 @@ target 'The Mac Weekly' do
   
   pod 'Alamofire', '~> 4.5'
   pod 'SwiftyJSON'
-
+  pod 'Kingfisher', '~> 4.0'
+  
   target 'The Mac WeeklyTests' do
     inherit! :search_paths
     # Pods for testing

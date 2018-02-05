@@ -7,28 +7,50 @@
 //
 
 import UIKit
+import Kingfisher
+import Alamofire
 
 class PostTableViewController: UITableViewController {
     
+    
     var posts: [Post?] = []
-    var loading = false
+    var requests: [DataRequest] = []
     var page = 0
     
     let infinitescroll_margin = 20
     
-    func nextPage() {
-        if !loading {
+    func refresh(completion: @escaping ([Post?]) -> Void = {_ in }) {
+        requests.forEach {request in
+            request.cancel()
+        }
+        requests = []
+        posts = []
+        page = 0
+        
+        self.tableView.reloadData()
+        
+        nextPage(completion: completion)
+    }
+    
+    func removeExpiredRequests() {
+        requests = requests.filter { request in
+            return !request.progress.isFinished
+        }
+    }
+    
+    func nextPage(completion: @escaping ([Post?]) -> Void = { _ in }) {
+        removeExpiredRequests()
+        if requests.count == 0 {
             let nextPage = page + 1
-            loading = true
             
-            getPosts(nextPage) { posts in
-                self.posts += posts
-                self.page = nextPage
-                self.tableView.reloadData()
-            }.response { _ in
-                self.loading = false
-            }
-            
+            requests.append(getPosts(nextPage) { posts in
+                if posts.count > 0 {
+                    self.posts += posts
+                    self.page = nextPage
+                    self.tableView.reloadData()
+                    completion(posts)
+                }
+            })
         }
     }
     
@@ -78,11 +100,27 @@ class PostTableViewController: UITableViewController {
             cell.authorNameLabel.text = post.author != nil ? ("By \(post.author!.name)" as String?) : (nil as String?)
             cell.titleLabel.text = post.title
             cell.previewLabel.text = String(post.body.prefix(140))
+            cell.thumbnailContainer.isHidden = false
+            post.thumbnail { thumbnail in
+                if let thumbnail = thumbnail {
+                    cell.thumbnailView.image = thumbnail
+                    cell.thumbnailView.layer.cornerRadius = 5
+                    cell.thumbnailProgress.isHidden = true
+                    cell.thumbnailContainer.isHidden = false
+                } else {
+                    cell.thumbnailContainer.isHidden = true
+                }
+            }
+            cell.titleLabel.isEnabled = true
+            cell.previewLabel.isEnabled = true
         } else {
             cell.titleLabel.text = "Error: Could not fetch post"
             cell.previewLabel.text = "There was an error fetching this post. Please refresh and report this incident."
+            cell.titleLabel.isEnabled = false
+            cell.previewLabel.isEnabled = false
             cell.dateLabel.text = nil
             cell.authorNameLabel.text = nil
+            cell.thumbnailContainer.isHidden = true
         }
         
         return cell
@@ -124,14 +162,54 @@ class PostTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+        
+        super.prepare(for: segue, sender: sender)
+        
+        switch (segue.identifier ?? "") {
+        case "ShowPost":
+            guard let postTableCellView = sender as? PostTableViewCell else {
+                fatalError()
+            }
+            
+            guard let destination = segue.destination as? PostViewController else {
+                fatalError()
+            }
+            guard let indexPath = tableView.indexPath(for: postTableCellView) else {
+                fatalError()
+            }
+            destination.post = posts[indexPath.row]!
+        default:
+            break
+        }
+        
 
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        switch(identifier) {
+        case "ShowPost":
+            guard let postTableCellView = sender as? PostTableViewCell else {
+                fatalError()
+            }
+            guard let indexPath = tableView.indexPath(for: postTableCellView) else {
+                fatalError()
+            }
+            let post = posts[indexPath.row]
+            return post != nil
+        default:
+            return true
+        }
+    }
+ 
+    @IBAction func refreshView(_ sender: UIRefreshControl) {
+        refresh { _ in
+            sender.endRefreshing()
+        }
+    }
+    
 }

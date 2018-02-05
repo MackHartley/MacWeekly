@@ -15,6 +15,10 @@ class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var authorNameLabel: UILabel!
     @IBOutlet weak var previewLabel: UILabel!
+    @IBOutlet weak var thumbnailView: UIImageView!
+    @IBOutlet weak var thumbnailContainer: UIView!
+    @IBOutlet weak var thumbnailProgress: UIActivityIndicatorView!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

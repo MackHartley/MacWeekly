@@ -2,3 +2,4 @@
 *.xcbkptlist
 *.lock
 Pods
+*.xcuserdata*
