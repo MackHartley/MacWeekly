@@ -253,7 +253,6 @@ public class MainActivity extends AppCompatActivity
 
     private void goToAboutPage() {
         String versionName = BuildConfig.VERSION_NAME;
-        hideNewsFeed();
         Intent aboutPageIntent = new Intent(this, AboutPage.class);
         aboutPageIntent.putExtra(AboutPage.VERSION, versionName);
         startActivity(aboutPageIntent);
